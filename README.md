@@ -51,6 +51,8 @@
 
 Implementation of <a href="https://openreview.net/pdf?id=YicbFdNTTy">Vision Transformer</a>, a simple way to achieve SOTA in vision classification with only a single transformer encoder, in Pytorch. Significance is further explained in <a href="https://www.youtube.com/watch?v=TrdevFK_am4">Yannic Kilcher's</a> video. There's really not much to code here, but may as well lay it out for everyone so we expedite the attention revolution.
 
+**New**: C++ HLS implementation for FPGA deployment is now available in the `vit_cpp/` directory. This provides a hardware-optimized version suitable for edge devices and low-power applications.
+
 For a Pytorch implementation with pretrained models, please see Ross Wightman's repository <a href="https://github.com/rwightman/pytorch-image-models">here</a>.
 
 The official Jax repository is <a href="https://github.com/google-research/vision_transformer">here</a>.
@@ -87,6 +89,39 @@ img = torch.randn(1, 3, 256, 256)
 
 preds = v(img) # (1, 1000)
 ```
+
+## C++ HLS Implementation
+
+A hardware-optimized C++ implementation is available in the `vit_cpp/` directory, designed for FPGA deployment using Xilinx Vivado HLS or Vitis HLS. This implementation provides:
+
+- **Fixed-point arithmetic** for hardware efficiency
+- **Parallel processing** optimized for FPGA architectures  
+- **HLS pragmas** for optimal synthesis
+- **Configurable dimensions** for different FPGA targets
+- **Resource-efficient** design for edge deployment
+
+### Quick Start (C++ HLS)
+
+```bash
+cd vit_cpp
+make all          # Build simulation
+make test         # Run tests
+make hls          # Run HLS synthesis (requires Vivado HLS)
+```
+
+### Integration Example
+
+```python
+# PyTorch training
+model = ViT(image_size=224, patch_size=16, num_classes=1000, dim=768, depth=12, heads=12, mlp_dim=3072)
+# ... train model ...
+
+# Export to C++ HLS
+python vit_cpp/tools/convert_weights.py --model-path model.pth --output-dir weights/
+# Deploy to FPGA using the C++ implementation
+```
+
+See `vit_cpp/README.md` for detailed documentation and `vit_cpp/examples/` for integration examples.
 
 ## Parameters
 
